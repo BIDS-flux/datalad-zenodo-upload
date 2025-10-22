@@ -28,9 +28,15 @@ def parse_args() -> dict:
         default=".zenodo.json",
     )
     parser.add_argument(
-        "--zip-name",
+        "--archive-name",
         help="name of the zip file to upload",
-        default=os.environ["GITHUB_REF_NAME"],
+        default=os.environ.get("GITHUB_REF_NAME", "release").replace(os.sep, "-"),
+    )
+    parser.add_argument(
+        "--archive-format",
+        choices=["tar", "gztar", "bztar", "xztar", "zstdtar"],
+        default="gztar",
+        help="archive format to upload the dataset, note that some formats might not support symlinks",
     )
     parser.add_argument(
         "--recursion-limit",
@@ -67,21 +73,21 @@ def get_dataset(
 def datalad_zenodo_upload(
     ds: dlad.Dataset,
     metadata_filename: str,
-    zip_name: str,
-    zenodo_api_token: str,
+    archive_name: str,
+    archive_format: str,
+#    zenodo_api_token: str,
     sandbox: bool = False,
 ) -> (str, str):
-    zip_path = os.path.join(tempfile.mkdtemp(), zip_name)
-    shutil.make_archive(zip_path, "zip", ds.path)
-    zip_path += ".zip"
-    # zenodo = Zenodo(access_token=zenodo_api_token, sandbox=sandbox)
-    metadata = Metadata.parse_file(ds.pathobj / metadata_filename)
-    ensure_zenodo(
-        key=os.environ["GITHUB_REPOSITORY"],
-        data=metadata,
-        paths=[zip_path],
-        sandbox=sandbox,
-    )
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        archive_bname = os.path.join(tmp_dir, archive_name)
+        archive_path = shutil.make_archive(archive_bname, archive_format, ds.path)
+        metadata = Metadata.parse_file(ds.pathobj / metadata_filename)
+        ensure_zenodo(
+            key=os.environ["GITHUB_REPOSITORY"],
+            data=metadata,
+            paths=[archive_path],
+            sandbox=sandbox,
+        )
 
 
 if __name__ == "__main__":
@@ -89,5 +95,9 @@ if __name__ == "__main__":
 
     ds = get_dataset(recursion_limit=args.recursion_limit)
     datalad_zenodo_upload(
-        ds, args.metadata_filename, args.zip_name, args.zenodo_api_token, sandbox=args.sandbox
+        ds,
+        args.metadata_filename,
+        args.archive_name,
+        sandbox=args.sandbox,
+        archive_format=args.archive_format,
     )
