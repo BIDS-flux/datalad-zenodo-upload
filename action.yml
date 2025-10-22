@@ -1,24 +1,24 @@
 # Make sure to change the action name here (must be unique).
 # Update the rest as needed.
-name: 'unique-action-goes-here'
+name: 'datalad-zenodo-upload'
 description: 'BRIEF DESCRIPTION OF YOUR ACTION'
 branding: # Look at documentation for branding options/requirements. These are my favorites.
-  icon: 'book-open'
-  color: 'green'
+  icon: 'upload'
+  color: 'blue'
 inputs:
-  input-one:
-    description: 'Description of input-one'
-    required: false
-    default: 'default value goes here'
-  input-two:
-    description: 'Description of input-two'
-    required: false
-    default: 'default value goes here'
+  recursion_limit:
+    description: 'recursion depth of the dataset that we want to release'
+    type: int
+    default: 0
+  zenodo_creds:
+    description: 'zenodo credentials'
+    required: true
+
 outputs:
-  output-one:
-    description: 'Description of output-one'
-  output-two:
-    description: 'Description of output-two'
+  zenodo_doi:
+    description: 'generated DOI'
+  zenodo_url:
+    description: 'URL to zenodo record'
 runs:
   using: 'docker'
   image: 'Dockerfile'
