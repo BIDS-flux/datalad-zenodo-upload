@@ -31,14 +31,12 @@ jobs:
     - name: Integration test
       id: integration
       uses: ./
-      with:
-        input-one: something
-        sandbox: true
 
     - name: Output the outputs of the integration test of the action
       run: |
-        echo "output-one = ${{ steps.integration.outputs.output-one }}"
-        echo "output-two = ${{ steps.integration.outputs.output-two }}"
+        echo "zenodo_doi = ${{ steps.integration.outputs.zenodo_doi }}"
+        echo "zenodo_url = ${{ steps.integration.outputs.zenodo_url }}"
+        echo "archive_url = ${{ steps.integration.outputs.archive_url }}"
 
     - name: Verify integration test results
       run: python3 -u -m unittest tests/integration.py

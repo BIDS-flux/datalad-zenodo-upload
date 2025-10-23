@@ -25,5 +25,7 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - "--recursion-limit ${{ inputs.recursion_limit }}"
-    - "--archive-format ${{ inputs.archive_format }}"
+    - "--recursion-limit"
+    - "${{ inputs.recursion_limit }}"
+    - "--archive-format"
+    - "${{ inputs.archive_format }}"
