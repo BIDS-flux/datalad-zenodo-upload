@@ -9,6 +9,6 @@
   ],
 	"description": "action to upload datalad datasets to zenodo",
   "access_right": "open",
-  "license": "CC0",
+	"license": "MIT",
 	"keywords": ["Datalad", "zenodo", "DOI"]
 }
