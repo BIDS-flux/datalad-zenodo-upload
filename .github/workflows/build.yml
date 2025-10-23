@@ -33,6 +33,7 @@ jobs:
       uses: ./
       with:
         sandbox: true
+        zenodo_token: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
 
     - name: Output the outputs of the integration test of the action
       run: |
