@@ -31,6 +31,8 @@ jobs:
     - name: Integration test
       id: integration
       uses: ./
+      with:
+        sandbox: true
 
     - name: Output the outputs of the integration test of the action
       run: |

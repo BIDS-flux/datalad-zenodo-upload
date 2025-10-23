@@ -14,6 +14,10 @@ inputs:
     description: 'format of the archive we want to push, following shutil.make_archive syntax'
     type: str
     default: "gztar"
+  sandbox:
+    description: 'submit to zenodo sandbox'
+    type: bool
+    default: false
 outputs:
   zenodo_doi:
     description: 'generated DOI'
@@ -29,3 +33,4 @@ runs:
     - "${{ inputs.recursion_limit }}"
     - "--archive-format"
     - "${{ inputs.archive_format }}"
+    - "${{ inputs.sandbox && '--sandbox' }}"
