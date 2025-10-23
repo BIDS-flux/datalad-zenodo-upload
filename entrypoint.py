@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 
 # NOTE: If you are using an alpine docker image
 # such as pyaction-lite, the -S option above won't
@@ -84,7 +84,7 @@ def datalad_zenodo_upload(
             sandbox=sandbox,
         )
         res_json = res.json()
-        res_json["doi"], res_json["doi_url"], res_json['files'][0]['links']['download']
+    return res_json["doi"], res_json["doi_url"], res_json['files'][0]['links']['download']
 
 
 if __name__ == "__main__":
