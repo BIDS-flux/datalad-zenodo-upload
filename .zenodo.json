@@ -1,0 +1,14 @@
+{
+	"upload_type": "software",
+	"title": "datalad-zenodo-upload",
+  "creators": [
+    {
+			"name": "Basile Pinsard",
+      "affiliation": "CRIUGM"
+    }
+  ],
+	"description": "action to upload datalad datasets to zenodo",
+  "access_right": "open",
+  "license": "CC0",
+	"keywords": ["Datalad", "zenodo", "DOI"]
+}

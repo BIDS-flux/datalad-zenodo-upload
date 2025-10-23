@@ -10,18 +10,20 @@ inputs:
     description: 'recursion depth of the dataset that we want to release'
     type: int
     default: 0
-  zenodo_creds:
-    description: 'zenodo credentials'
-    required: true
-
+  archive_format:
+    description: 'format of the archive we want to push, following shutil.make_archive syntax'
+    type: str
+    default: "gztar"
 outputs:
   zenodo_doi:
     description: 'generated DOI'
   zenodo_url:
     description: 'URL to zenodo record'
+  archive_url:
+    description: 'URL to archive'
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.input-one }}
-    - ${{ inputs.input-two }}
+    - "--recursion-limit ${{ inputs.recursion_limit }}"
+    - "--archive-format ${{ inputs.archive_format }}"

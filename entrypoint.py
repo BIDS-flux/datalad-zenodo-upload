@@ -43,11 +43,6 @@ def parse_args() -> dict:
         help="recursion depth of the dataset that we want to release",
     )
     parser.add_argument(
-        "--zenodo_api_token",
-        help="zenodo token",
-        default=os.environ["ZENODO_API_TOKEN"],
-    )
-    parser.add_argument(
         "--sandbox",
         action="store_true",
         help="use sandbox zenodo API",
@@ -77,27 +72,34 @@ def datalad_zenodo_upload(
     archive_format: str,
 #    zenodo_api_token: str,
     sandbox: bool = False,
-) -> (str, str):
+) -> (str, str, str):
     with tempfile.TemporaryDirectory() as tmp_dir:
         archive_bname = os.path.join(tmp_dir, archive_name)
         archive_path = shutil.make_archive(archive_bname, archive_format, ds.path)
         metadata = Metadata.parse_file(ds.pathobj / metadata_filename)
-        ensure_zenodo(
+        res = ensure_zenodo(
             key=os.environ["GITHUB_REPOSITORY"],
             data=metadata,
             paths=[archive_path],
             sandbox=sandbox,
         )
+        res_json = res.json()
+        res_json["doi"], res_json["doi_url"], res_json['files'][0]['links']['download']
 
 
 if __name__ == "__main__":
     args = parse_args()
 
     ds = get_dataset(recursion_limit=args.recursion_limit)
-    datalad_zenodo_upload(
+    doi, zenodo_url, archive_url = datalad_zenodo_upload(
         ds,
         args.metadata_filename,
         args.archive_name,
         sandbox=args.sandbox,
         archive_format=args.archive_format,
     )
+    if "GITHUB_OUTPUT" in os.environ :
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f :
+            print("{0}={1}".format("doi", doi), file=f)
+            print("{0}={1}".format("zenodo_url", zenodo_url), file=f)
+            print("{0}={1}".format("archive_url", archive_url), file=f)
