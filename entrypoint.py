@@ -10,6 +10,7 @@ import sys
 import os
 import json
 import datalad.api as dlad
+from datalad.config import ConfigManager
 from zenodo_client import Zenodo, Creator, Metadata, ensure_zenodo
 import argparse
 import shutil
@@ -87,9 +88,19 @@ def datalad_zenodo_upload(
     return res_json["doi"], res_json["doi_url"], res_json['files'][0]['links']['download']
 
 
+def setup_git(
+        username=os.environ.get('GIT_USERNAME'),
+        email=os.environ.get('GIT_EMAIL'),
+    ):
+
+    config = ConfigManager()
+    if username and email:
+        config.set('user.name', username, scope='global')
+        config.set('user.email', email, scope='global')
+
 if __name__ == "__main__":
     args = parse_args()
-
+    setup_git()
     ds = get_dataset(recursion_limit=args.recursion_limit)
     doi, zenodo_url, archive_url = datalad_zenodo_upload(
         ds,

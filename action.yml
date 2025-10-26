@@ -34,6 +34,8 @@ runs:
   env:
     ZENODO_API_TOKEN: ${{ inputs.zenodo_token }}
     ZENODO_SANDBOX_API_TOKEN: ${{ inputs.zenodo_token }}
+    GIT_USERNAME: Github action
+    GIT_EMAIL: action@github.com
   args:
     - "--recursion-limit"
     - "${{ inputs.recursion_limit }}"
