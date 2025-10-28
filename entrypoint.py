@@ -16,6 +16,7 @@ import argparse
 import shutil
 import tempfile
 import pathlib
+import logging
 
 
 def parse_args() -> dict:
@@ -63,6 +64,7 @@ def get_dataset(
     ds = dlad.install(
         source=url, path=tmp_dir, recursive=True, recursion_limit=recursion_limit
     )
+    logging.info("dataset installed recursively")
     return ds
 
 
@@ -77,6 +79,7 @@ def datalad_zenodo_upload(
     with tempfile.TemporaryDirectory() as tmp_dir:
         archive_bname = os.path.join(tmp_dir, archive_name)
         archive_path = shutil.make_archive(archive_bname, archive_format, ds.path)
+        logging.info("archive created")
         metadata = Metadata.parse_file(ds.pathobj / metadata_filename)
         res = ensure_zenodo(
             key=os.environ["GITHUB_REPOSITORY"],
@@ -85,6 +88,7 @@ def datalad_zenodo_upload(
             sandbox=sandbox,
         )
         res_json = res.json()
+        logging.info("uploaded to zenodo")
     return res_json["doi"], res_json["doi_url"], res_json['files'][0]['links']['download']
 
 

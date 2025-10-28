@@ -30,7 +30,7 @@ outputs:
     description: 'URL to archive'
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: docker://ghcr.io/bids-flux/datalad-zenodo-upload:main
   env:
     ZENODO_API_TOKEN: ${{ inputs.zenodo_token }}
     ZENODO_SANDBOX_API_TOKEN: ${{ inputs.zenodo_token }}
