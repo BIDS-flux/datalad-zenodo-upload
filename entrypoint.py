@@ -42,6 +42,7 @@ def parse_args() -> dict:
     )
     parser.add_argument(
         "--recursion-limit",
+        type=int,
         help="recursion depth of the dataset that we want to release",
     )
     parser.add_argument(
