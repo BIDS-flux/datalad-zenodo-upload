@@ -1,8 +1,8 @@
 # Make sure to change the action name here (must be unique).
 # Update the rest as needed.
 name: 'datalad-zenodo-upload'
-description: 'BRIEF DESCRIPTION OF YOUR ACTION'
-branding: # Look at documentation for branding options/requirements. These are my favorites.
+description: 'Action to upload a datalad repo to Zenodo, including all .git so that once unzip, it can be used with datalad. Dataset can be checked-out recursively with an optional recursion limit.'
+branding:
   icon: 'upload'
   color: 'blue'
 inputs:

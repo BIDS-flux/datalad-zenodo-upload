@@ -81,7 +81,9 @@ def datalad_zenodo_upload(
         archive_bname = os.path.join(tmp_dir, archive_name)
         archive_path = shutil.make_archive(archive_bname, archive_format, ds.path)
         logging.info("archive created")
-        metadata = Metadata.parse_file(ds.pathobj / metadata_filename)
+        with open(ds.pathobj / metadata_filename) as fd:
+            meta_json = fd.read()
+        metadata = Metadata.model_validate_json(meta_json)
         res = ensure_zenodo(
             key=os.environ["GITHUB_REPOSITORY"],
             data=metadata,
