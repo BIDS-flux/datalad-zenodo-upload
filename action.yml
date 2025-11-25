@@ -11,16 +11,14 @@ inputs:
     required: true
   recursion_limit:
     description: 'recursion depth of the dataset that we want to release'
-    type: int
     default: 0
   archive_format:
     description: 'format of the archive we want to push, following shutil.make_archive syntax'
-    type: str
     default: "gztar"
   sandbox:
     description: 'submit to zenodo sandbox'
-    type: bool
-    default: false
+    required: 'false'
+    default: 'false'
 outputs:
   zenodo_doi:
     description: 'generated DOI'
@@ -37,8 +35,8 @@ runs:
     GIT_USERNAME: Github action
     GIT_EMAIL: action@github.com
   args:
-    - "--recursion-limit"
-    - "${{ inputs.recursion_limit }}"
-    - "--archive-format"
-    - "${{ inputs.archive_format }}"
-    - "${{ inputs.sandbox && '--sandbox' }}"
+    - --recursion-limit
+    - ${{ inputs.recursion_limit }}
+    - --archive-format
+    - ${{ inputs.archive_format }}
+    - ${{ inputs.sandbox=='true' && '--sandbox' || '--no-sandbox' }}

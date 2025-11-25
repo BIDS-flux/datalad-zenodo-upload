@@ -47,10 +47,11 @@ def parse_args() -> dict:
     )
     parser.add_argument(
         "--sandbox",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
         help="use sandbox zenodo API",
     )
-    return parser.parse_args()
+    args, unknown = parser.parse_known_args()
+    return args
 
 
 def get_dataset(
