@@ -17,6 +17,7 @@ import shutil
 import tempfile
 import pathlib
 import logging
+from typing import List, Optional
 
 
 def parse_args() -> dict:
@@ -41,6 +42,12 @@ def parse_args() -> dict:
         help="archive format to upload the dataset, note that some formats might not support symlinks",
     )
     parser.add_argument(
+        "--additional-subdatasets",
+        default=None,
+        nargs="+",
+        help="include subdatasets beyond the recursion depth",
+    )
+    parser.add_argument(
         "--recursion-limit",
         type=int,
         help="recursion depth of the dataset that we want to release",
@@ -56,6 +63,7 @@ def parse_args() -> dict:
 
 def get_dataset(
     recursion_limit: int = 0,
+    additional_subdatasets: Optional[List[str]] = None,
 ) -> pathlib.Path:
 
     username_token = ""
@@ -66,6 +74,8 @@ def get_dataset(
     ds = dlad.install(
         source=url, path=tmp_dir, recursive=True, recursion_limit=recursion_limit
     )
+    if additional_subdatasets:
+        ds.get(additional_subdatasets, get_data=False)
     logging.info("dataset installed recursively")
     return ds
 
@@ -109,7 +119,9 @@ def setup_git(
 if __name__ == "__main__":
     args = parse_args()
     setup_git()
-    ds = get_dataset(recursion_limit=args.recursion_limit)
+    ds = get_dataset(
+        recursion_limit=args.recursion_limit,
+        additional_subdatasets=args.additional_subdatasets)
     doi, zenodo_url, archive_url = datalad_zenodo_upload(
         ds,
         args.metadata_filename,

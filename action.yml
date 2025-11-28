@@ -12,6 +12,8 @@ inputs:
   recursion_limit:
     description: 'recursion depth of the dataset that we want to release'
     default: 0
+  additional_subdatasets:
+    description: 'include subdatasets beyond the recursion depth'
   archive_format:
     description: 'format of the archive we want to push, following shutil.make_archive syntax'
     default: "gztar"
@@ -40,3 +42,4 @@ runs:
     - --archive-format
     - ${{ inputs.archive_format }}
     - ${{ inputs.sandbox=='true' && '--sandbox' || '--no-sandbox' }}
+    - ${{ inputs.additional_subdatasets && format('--additional-subdatasets {0}', inputs.additional_subdatasets) || '--no-additional-subdatasets' }}
