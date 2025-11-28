@@ -36,10 +36,7 @@ runs:
     ZENODO_SANDBOX_API_TOKEN: ${{ inputs.zenodo_token }}
     GIT_USERNAME: Github action
     GIT_EMAIL: action@github.com
+  entrypoint: /bin/sh
   args:
-    - --recursion-limit
-    - ${{ inputs.recursion_limit }}
-    - --archive-format
-    - ${{ inputs.archive_format }}
-    - ${{ inputs.sandbox=='true' && '--sandbox' || '--no-sandbox' }}
-    - ${{ inputs.additional_subdatasets && format('--additional-subdatasets {0}', inputs.additional_subdatasets) || '--no-additional-subdatasets' }}
+    - -c
+    - /entrypoint.py --recursion-limit ${{ inputs.recursion_limit }} --archive-format ${{ inputs.archive_format }} ${{ inputs.sandbox=='true' && '--sandbox' || '--no-sandbox' }} ${{ inputs.additional_subdatasets!='' && format('--additional-subdatasets {0}', inputs.additional_subdatasets) || '--no-additional-subdatasets' }}
