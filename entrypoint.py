@@ -33,7 +33,8 @@ def parse_args() -> dict:
     parser.add_argument(
         "--archive-name",
         help="name of the zip file to upload",
-        default=os.environ.get("GITHUB_REF_NAME", "release").replace(os.sep, "-"),
+        default= (os.environ.get("GITHUB_REPOSITORY").split('/')[-1] + '-' +
+        os.environ.get("GITHUB_REF_NAME", "release").replace(os.sep, "-")),
     )
     parser.add_argument(
         "--archive-format",
@@ -62,6 +63,7 @@ def parse_args() -> dict:
 
 
 def get_dataset(
+    top_dir_name: str,
     recursion_limit: int = 0,
     additional_subdatasets: Optional[List[str]] = None,
 ) -> pathlib.Path:
@@ -70,7 +72,7 @@ def get_dataset(
     if "GIT_TOKEN" in os.environ:
         username_token = f"{os.environ['GIT_TOKEN']}@"
     url = f"https://{username_token}github.com/{os.environ['GITHUB_REPOSITORY']}.git"
-    tmp_dir = pathlib.Path(tempfile.mkdtemp())
+    tmp_dir = pathlib.Path(tempfile.mkdtemp()) / top_dir_name
     ds = dlad.install(
         source=url, path=tmp_dir, recursive=True, recursion_limit=recursion_limit
     )
@@ -90,7 +92,7 @@ def datalad_zenodo_upload(
 ) -> (str, str, str):
     with tempfile.TemporaryDirectory() as tmp_dir:
         archive_bname = os.path.join(tmp_dir, archive_name)
-        archive_path = shutil.make_archive(archive_bname, archive_format, ds.path)
+        archive_path = shutil.make_archive(archive_bname, archive_format, str(ds.pathobj.parent), ds.pathobj.parts[-1])
         logging.info("archive created")
         with open(ds.pathobj / metadata_filename) as fd:
             meta_json = fd.read()
@@ -120,6 +122,7 @@ if __name__ == "__main__":
     args = parse_args()
     setup_git()
     ds = get_dataset(
+        top_dir_name=args.archive_name,
         recursion_limit=args.recursion_limit,
         additional_subdatasets=args.additional_subdatasets)
     doi, zenodo_url, archive_url = datalad_zenodo_upload(
